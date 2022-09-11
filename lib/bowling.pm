@@ -4,7 +4,8 @@ use warnings;
 
 sub score {
     my $rolls = shift;
-    return 1
+    my @frame = split(//, $rolls);
+    return @frame[0];
 }
 
 1;
