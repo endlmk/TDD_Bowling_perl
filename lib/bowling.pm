@@ -5,7 +5,15 @@ use warnings;
 sub score {
     my $rolls = shift;
     my @frame = split(//, $rolls);
-    return @frame[0];
+
+    my $first = @frame[0];
+    my $second = @frame[1];
+
+    if($first eq '-') {
+        $first = 0;
+    }
+
+    return $first;
 }
 
 1;
