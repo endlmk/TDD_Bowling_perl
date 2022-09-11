@@ -2,9 +2,9 @@ package Bowling;
 use strict;
 use warnings;
 
-sub double {
-    my $num = shift;
-    return $num * 2
+sub score {
+    my $rolls = shift;
+    return 1
 }
 
 1;
