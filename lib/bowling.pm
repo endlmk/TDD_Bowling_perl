@@ -6,17 +6,17 @@ sub score {
     my $rolls = shift;
     my @frame = split(//, $rolls);
 
-    my $first = $frame[0];
-    my $second = $frame[1];
-
-    if($first eq '-') {
-        $first = 0;
-    }
-    if($second eq '-') {
-        $second = 0;
-    }
-
+    my $first = convert_roll($frame[0]);
+    my $second = convert_roll($frame[1]);
     return $first + $second;
+}
+
+sub convert_roll {
+    my $roll = shift;
+    if($roll eq '-') {
+        return 0;
+    }
+    return $roll;
 }
 
 1;
