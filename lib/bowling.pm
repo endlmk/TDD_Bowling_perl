@@ -4,17 +4,24 @@ use warnings;
 
 sub score {
     my $rolls = shift;
-    my @frame = split(//, $rolls);
+    my @frames = split(/\|/, $rolls);
+    my $score = 0;
+    foreach my $frame (@frames) {
+        my @rollsInFrame = split(//, $frame);
 
-    if($frame[0] eq 'X') {
-        return 10;
-    } 
-    if($frame[1] eq '/') {
-        return 10;
-    } 
-    my $first = convert_roll($frame[0]);
-    my $second = convert_roll($frame[1]);
-    return $first + $second;
+        if($rollsInFrame[0] eq 'X') {
+            $score += 10;
+            next;
+        } 
+        if($rollsInFrame[1] eq '/') {
+            $score += 10;
+            next;
+        } 
+        my $first = convert_roll($rollsInFrame[0]);
+        my $second = convert_roll($rollsInFrame[1]);
+        $score += ($first + $second);
+    }
+    return $score;
 }
 
 sub convert_roll {
