@@ -10,31 +10,42 @@ sub score {
     my @strikes = (0) x 10;
     my $frameNum = @frames;
     for (my $frameIndex = 0; $frameIndex < $frameNum; ++$frameIndex) {
-        my $frame = @frames[$frameIndex];
+        my $frame = $frames[$frameIndex];
         my @rollsInFrame = split(//, $frame);
+        
+        if(scalar(@rollsInFrame) == 0) {
+            next;
+        }
 
-        my $frameScore = 0;
+        my $first = 0;
+        my $second = 0;
         if($rollsInFrame[0] eq 'X') {
-            $frameScore = 10;
+            $first = 10;
             @strikes[$frameIndex] = 1;
         } 
-        elsif($rollsInFrame[1] eq '/') {
-            $frameScore = 10;
-            @spares[$frameIndex] = 1;
-        } 
         else {
-            my $first = convert_roll($rollsInFrame[0]);
-            my $second = convert_roll($rollsInFrame[1]);
-            $frameScore = $first + $second;
+            $first = convert_roll($rollsInFrame[0]);
+            if(scalar(@rollsInFrame) == 2)
+            {
+                if($rollsInFrame[1] eq '/') {
+                    $second = 10 - $first;
+                    @spares[$frameIndex] = 1;
+                } 
+                else {
+                    $second = convert_roll($rollsInFrame[1]);
+                }
+            }
         }
+        $score += ($first + $second);
 
-        $score += $frameScore;
-
-        if($frameIndex > 0 && ($spares[$frameIndex - 1] || $strikes[$frameIndex - 1])) {
-            $score += $frameScore;
+        if($frameIndex > 0 && $spares[$frameIndex - 1]) {
+            $score += $first;
         }
-        if($frameIndex > 1 && $strikes[$frameIndex - 2]) {
-            $score += $frameScore;
+        if($frameIndex > 0 && $strikes[$frameIndex - 1] && $strikes[$frameIndex] == 0) {
+            $score += $first + $second;
+        }
+        if($frameIndex > 1 && $strikes[$frameIndex - 2] && $strikes[$frameIndex - 1]) {
+            $score += 20;
         }
     }
     return $score;
