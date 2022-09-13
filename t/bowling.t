@@ -4,7 +4,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 
-use Test::More tests=> 18;
+use Test::More tests=> 19;
 use Bowling;
 
 is(Bowling::score("1-"), 1); 
@@ -25,3 +25,4 @@ is(Bowling::score("X|X|X|X|X|X|X|X|X|X||--"), 270);
 is(Bowling::score("X|X|X|X|X|X|X|X|X|--||"), 240); 
 is(Bowling::score("X|X|X|X|X|X|X|X|X|X||XX"), 300); 
 is(Bowling::score("X|X|X|X|X|X|X|X|X|6/||X"), 276); 
+is(Bowling::score("X|X|X|X|X|X|X|X|X|X||-/"), 280); 
