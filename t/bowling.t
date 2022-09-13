@@ -21,3 +21,7 @@ is(Bowling::score("X|-/|32"), 38);
 is(Bowling::score("6/|-/|X"), 40); 
 is(Bowling::score("9-|9-|9-|9-|9-|9-|9-|9-|9-|9-||"), 90); 
 is(Bowling::score("5/|5/|5/|5/|5/|5/|5/|5/|5/|5/||5"), 150); 
+is(Bowling::score("X|X|X|X|X|X|X|X|X|X||--"), 270); 
+is(Bowling::score("X|X|X|X|X|X|X|X|X|--||"), 240); 
+is(Bowling::score("X|X|X|X|X|X|X|X|X|X||XX"), 300); 
+is(Bowling::score("X|X|X|X|X|X|X|X|X|6/||X"), 276); 
