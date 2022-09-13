@@ -4,7 +4,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 
-use Test::More tests=> 14;
+use Test::More tests=> 18;
 use Bowling;
 
 is(Bowling::score("1-"), 1); 
