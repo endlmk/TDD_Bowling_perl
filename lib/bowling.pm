@@ -13,28 +13,28 @@ sub score {
         my $frame = @frames[$frameIndex];
         my @rollsInFrame = split(//, $frame);
 
+        my $frameScore = 0;
         if($rollsInFrame[0] eq 'X') {
-            $score += 10;
+            $frameScore = 10;
             @strikes[$frameIndex] = 1;
-            next;
         } 
-        if($rollsInFrame[1] eq '/') {
-            $score += 10;
+        elsif($rollsInFrame[1] eq '/') {
+            $frameScore = 10;
             @spares[$frameIndex] = 1;
-            next;
         } 
-        my $first = convert_roll($rollsInFrame[0]);
-        my $second = convert_roll($rollsInFrame[1]);
-        $score += ($first + $second);
-
-        if($frameIndex > 0 && $spares[$frameIndex - 1]) {
-            $score += ($first + $second);
+        else {
+            my $first = convert_roll($rollsInFrame[0]);
+            my $second = convert_roll($rollsInFrame[1]);
+            $frameScore = $first + $second;
         }
-        if($frameIndex > 0 && $strikes[$frameIndex - 1]) {
-            $score += ($first + $second);
+
+        $score += $frameScore;
+
+        if($frameIndex > 0 && ($spares[$frameIndex - 1] || $strikes[$frameIndex - 1])) {
+            $score += $frameScore;
         }
         if($frameIndex > 1 && $strikes[$frameIndex - 2]) {
-            $score += ($first + $second);
+            $score += $frameScore;
         }
     }
     return $score;
