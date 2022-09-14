@@ -4,60 +4,48 @@ use warnings;
 
 sub score {
     my $rolls = shift;
-    $rolls =~ s/\|\|/\|/;
-    $rolls =~ s/XX/X\|X/;
-    my @frames = split(/\|/, $rolls);
-    my $score = 0;
-    my @spares = (0) x 12;
-    my @strikes = (0) x 12;
-    my $frameNum = @frames;
-    for (my $frameIndex = 0; $frameIndex < $frameNum; ++$frameIndex) {
-        my $frame = $frames[$frameIndex];
-        my @rollsInFrame = split(//, $frame);
-        
-        my $first = 0;
-        my $second = 0;
-        if($rollsInFrame[0] eq 'X') {
-            $first = 10;
-            @strikes[$frameIndex] = 1;
-        } 
-        else {
-            $first = convert_roll($rollsInFrame[0]);
-            if(scalar(@rollsInFrame) == 2)
-            {
-                if($rollsInFrame[1] eq '/') {
-                    $second = 10 - $first;
-                    @spares[$frameIndex] = 1;
-                } 
-                else {
-                    $second = convert_roll($rollsInFrame[1]);
-                }
-            }
-        }
-        if($frameIndex < 10)
-        {
-            $score += ($first + $second);
-        }
 
-        if($frameIndex > 0 && $spares[$frameIndex - 1]) {
-            $score += $first;
+    my @rollsFiltered = grep(/[\d\-\/X]/, split(//, $rolls));
+    my @rollsArray;
+    while(my ($i, $v) = each @rollsFiltered) {
+        if($v eq '-') {
+            $v = 0;
         }
-        if($frameIndex > 0 && $strikes[$frameIndex - 1] && $strikes[$frameIndex] == 0) {
-            $score += $first + $second;
+        if($v eq 'X') {
+            $v = 10;
         }
-        if($frameIndex > 1 && $strikes[$frameIndex - 2] && $strikes[$frameIndex - 1]) {
-            $score += ($first + 10);
+        if($v eq '/') {
+            $v = 10 - $rollsArray[$i - 1];
         }
+        push(@rollsArray, $v);
     }
-    return $score;
+
+    my $totalScore = 0;
+    my $totalRolls = scalar(@rollsArray);
+    my $rollsIndex = 0;
+    my $currentFrame = 1;
+    while($rollsIndex < $totalRolls && $currentFrame <= 10) {
+        if($rollsArray[$rollsIndex] == 10) {
+            $totalScore += (10 + safe_get_roll(\@rollsArray, $rollsIndex + 1)
+                               + safe_get_roll(\@rollsArray, $rollsIndex + 2));
+            $rollsIndex += 1;
+        }
+        elsif(($rollsArray[$rollsIndex] + $rollsArray[$rollsIndex + 1]) == 10) {
+            $totalScore += (10 + safe_get_roll(\@rollsArray, $rollsIndex + 2));
+            $rollsIndex += 2;
+        }
+        else {
+            $totalScore += ($rollsArray[$rollsIndex] + $rollsArray[$rollsIndex + 1]); 
+            $rollsIndex += 2;
+        }
+        $currentFrame += 1;
+    }
+    return $totalScore;
 }
 
-sub convert_roll {
-    my $roll = shift;
-    if($roll eq '-') {
-        return 0;
-    }
-    return $roll;
+sub safe_get_roll {
+    my ($rollsArray, $rollsIndex) = @_;
+    return ($rollsIndex < scalar(@$rollsArray)) ? @$rollsArray[$rollsIndex] : 0;
 }
 
 1;
